@@ -1,6 +1,6 @@
 import { RedisClient } from 'redis';
 import { promisify } from 'util';
-import { RedisData } from '../@types/redis';
+import { RedisLinkData, LinkMonitor } from '../@types/redis';
 
 class AsyncRedis extends RedisClient {
     public readonly hgetAsync = promisify(this.hget).bind(this);
@@ -21,10 +21,8 @@ class AsyncRedis extends RedisClient {
 
 class Redis {
     private _async_redis_connection: AsyncRedis;
-    private API_VERSION: string;
 
     constructor() {
-        this.API_VERSION = process.env.API_VERSION!;
         const { REDIS_HOST, REDIS_PASSWORD } = process.env;
         this._async_redis_connection = new AsyncRedis({
             host: REDIS_HOST,
@@ -33,22 +31,22 @@ class Redis {
 
     }
 
-    public async hget(hkey: string, key: string): Promise<RedisData> {
+    public async hget(hkey: string, key: string): Promise<RedisLinkData | LinkMonitor | LinkMonitor[]> {
         const savedValue = await this._async_redis_connection.hgetAsync(hkey, key);
         return JSON.parse(savedValue);
     }
     
-    public async hset(hkey: string, key: string, input: RedisData): Promise<void> {
+    public async hset(hkey: string, key: string, input: RedisLinkData | LinkMonitor | LinkMonitor[]): Promise<void> {
         const value = JSON.stringify(input);
         await this._async_redis_connection.hsetAsync([hkey, key, value]);
     }
 
-    public async hgetall(): Promise<any> {
-        return await this._async_redis_connection.hgetallAsync(this.API_VERSION);
+    public async hgetall(hkey: string): Promise<any> {
+        return await this._async_redis_connection.hgetallAsync(hkey);
     }
 
-    public async hdel(key: any): Promise<void> {
-        await this._async_redis_connection.hdelAsync(this.API_VERSION, key);
+    public async hdel(hkey: string, key: any): Promise<void> {
+        await this._async_redis_connection.hdelAsync(hkey, key);
     }
 }
 

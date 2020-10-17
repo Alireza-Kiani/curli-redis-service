@@ -2,8 +2,10 @@ import { CronJob } from 'cron';
 import Redis from './redis';
 import fetch from 'node-fetch';
 
+const { API_VERSION } = process.env;
+
 const cron = new CronJob('0 0 0 * * */6', async () => {
-    const response = await Redis.hgetall();
+    const response = await Redis.hgetall(API_VERSION!);
     let date: Date = new Date();
     date.setDate(date.getDate() - 7);
     const targetDate: number = date.getTime()
@@ -27,7 +29,7 @@ const cron = new CronJob('0 0 0 * * */6', async () => {
                     }
                 });
                 if(response.status == 200) {
-                    await Redis.hdel(data);
+                    await Redis.hdel(API_VERSION!, data);
                 }
             } catch (error) {
                 console.log(error);
