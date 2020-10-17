@@ -25,6 +25,8 @@ class ApiController {
             await ApiService.setValue(LINK_MONITORS!, link, monitorObj);
             return res.status(200).send({ message: 'New information saved successfully' });
         } catch (error) {
+            console.log(error);
+            
             return res.status(400).send(error);
         }
     }
@@ -45,6 +47,8 @@ class ApiController {
             await ApiService.setValue(SITE_MONITORS!, domain, monitorObj);
             return res.status(200).send({ message: 'New information saved successfully' });
         } catch (error) {
+            console.log(error);
+            
             return res.status(400).send(error);
         }
     }
