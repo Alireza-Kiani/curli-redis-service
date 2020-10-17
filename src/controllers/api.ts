@@ -11,8 +11,9 @@ class ApiController {
 
     saveMonitorLink: RequestHandler = async (req, res) => {
         try {
-            const { link, ip, useragent } = req.body;
-            let monitorObj: LinkMonitor[] = [{ ip, useragent }];
+            const link: string = req.body.link;
+            const data: LinkMonitor = req.body.data;
+            let monitorObj: LinkMonitor[] = [data];
             const firstCheck = await ApiService.getValue(LINK_MONITORS!, link);
             console.log(firstCheck);
             if (firstCheck) {
@@ -30,8 +31,9 @@ class ApiController {
 
     saveMonitorSite: RequestHandler = async (req, res) => {
         try {
-            const { ip, useragent, domain } = req.body;
-            let monitorObj: LinkMonitor[] = [{ ip, useragent }];
+            const domain: string = req.body.domain;
+            const data: LinkMonitor = req.body.data;
+            let monitorObj: LinkMonitor[] = [data];
             const firstCheck = await ApiService.getValue(SITE_MONITORS!, domain);
             console.log(firstCheck);
             if (firstCheck) {
@@ -41,7 +43,7 @@ class ApiController {
                 ]
             }
             await ApiService.setValue(SITE_MONITORS!, domain, monitorObj);
-            return res.status(200).send({ message: { message: 'New information saved successfully' } });
+            return res.status(200).send({ message: 'New information saved successfully' });
         } catch (error) {
             return res.status(400).send(error);
         }

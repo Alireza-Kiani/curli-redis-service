@@ -4,6 +4,8 @@ export interface RedisLinkData {
 }
 
 export interface LinkMonitor {
-    ip: string,
+    ip: string | string[],
     useragent: any
+    totalViews: number,
+    individualCount: string[]
 }
