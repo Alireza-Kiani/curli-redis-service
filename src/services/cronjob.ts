@@ -2,7 +2,7 @@ import { CronJob } from 'cron';
 import Redis from './redis';
 import fetch from 'node-fetch';
 
-const { API_VERSION } = process.env;
+const { API_VERSION, ALTERNATIVE_DB_PORT } = process.env;
 
 const cron = new CronJob('0 0 0 * * */6', async () => {
     const response = await Redis.hgetall(API_VERSION!);
@@ -17,7 +17,7 @@ const cron = new CronJob('0 0 0 * * */6', async () => {
 
         if (targetDate >= parsedDate){
             try {
-                const response = await fetch("http://curli.ir:8081/", {
+                const response = await fetch(`http://curli.ir:${ALTERNATIVE_DB_PORT}/`, {
                     method: "Post",
                     body: JSON.stringify({
                         "shortLink": data,
