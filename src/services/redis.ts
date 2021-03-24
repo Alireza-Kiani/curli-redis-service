@@ -31,7 +31,9 @@ class Redis {
             password: REDIS_PASSWORD
         });
         this._BloomFilter = new BloomFilter('FilterShortenedLinks', {
-            client: this._async_redis_connection
+            host: REDIS_HOST,
+            port: 6379,
+            redisClientOptions: { password: REDIS_PASSWORD }
         });
         this._BloomFilter.connect()
             .then(() => {
