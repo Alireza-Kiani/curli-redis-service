@@ -30,17 +30,17 @@ class Redis {
             host: REDIS_HOST,
             password: REDIS_PASSWORD
         });
-        this._BloomFilter = new BloomFilter('FilterShortenedLinks', {
-            host: REDIS_HOST,
-            port: 6379,
-            redisClientOptions: { password: REDIS_PASSWORD }
-        });
-        this._BloomFilter.connect()
-            .then(() => {
-                console.log('Redis Bloom is ready');
-                this._BloomFilter?.reserve(0.000001, 1000000, 2);
-            })
-            .catch(e => console.log('Something went wrong with Redis Bloom'));
+        // this._BloomFilter = new BloomFilter('FilterShortenedLinks', {
+        //     host: REDIS_HOST,
+        //     port: 6379,
+        //     redisClientOptions: { password: REDIS_PASSWORD }
+        // });
+        // this._BloomFilter.connect()
+        //     .then(() => {
+        //         console.log('Redis Bloom is ready');
+        //         this._BloomFilter?.reserve(0.000001, 1000000, 2);
+        //     })
+        //     .catch(e => console.log('Something went wrong with Redis Bloom'));
     }
 
     public async hget(hkey: string, key: string): Promise<RedisLinkData | LinkMonitor | LinkMonitor[]> {
