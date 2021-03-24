@@ -79,7 +79,7 @@ class ApiController {
             // const randomUniqueLink = CRS({ length: 5 });
             // New Method
             const hashedLinked = hash(link);
-            if (await ApiService.getValue(API_VERSION!, hashedLinked)) {
+            if (!(await ApiService.getValue(API_VERSION!, hashedLinked))) {
                 await ApiService.setValue(API_VERSION!, hashedLinked, {link, date: new Date()});
             }
             // if (!(await ApiService.BloomFilter().exists(hashedLinked))) {
