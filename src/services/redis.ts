@@ -38,6 +38,7 @@ class Redis {
         this._BloomFilter.connect()
             .then(() => {
                 console.log('Redis Bloom is ready');
+                this._BloomFilter?.reserve(0.000001, 1000000, 2);
             })
             .catch(e => console.log('Something went wrong with Redis Bloom'));
     }
