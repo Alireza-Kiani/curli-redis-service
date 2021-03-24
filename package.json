@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Alireza-Kiani/curli-redis-service#readme",
   "dependencies": {
+    "@albert-team/rebloom": "^2.5.0",
     "@types/cron": "^1.7.2",
     "@types/express": "^4.17.8",
     "@types/node-fetch": "^2.5.7",

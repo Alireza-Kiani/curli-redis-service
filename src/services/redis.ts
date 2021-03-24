@@ -1,6 +1,7 @@
 import { RedisClient } from 'redis';
 import { promisify } from 'util';
 import { RedisLinkData, LinkMonitor } from '../@types/redis';
+import { BloomFilter } from '@albert-team/rebloom';
 
 class AsyncRedis extends RedisClient {
     public readonly hgetAsync = promisify(this.hget).bind(this);
@@ -21,6 +22,7 @@ class AsyncRedis extends RedisClient {
 
 class Redis {
     private _async_redis_connection: AsyncRedis;
+    _BloomFilter: BloomFilter | null = null;
 
     constructor() {
         const { REDIS_HOST, REDIS_PASSWORD } = process.env;
@@ -28,7 +30,14 @@ class Redis {
             host: REDIS_HOST,
             password: REDIS_PASSWORD
         });
-
+        this._BloomFilter = new BloomFilter('FilterShortenedLinks', {
+            client: this._async_redis_connection
+        });
+        this._BloomFilter.connect()
+            .then(() => {
+                console.log('Redis Bloom is ready');
+            })
+            .catch(e => console.log('Something went wrong with Redis Bloom'));
     }
 
     public async hget(hkey: string, key: string): Promise<RedisLinkData | LinkMonitor | LinkMonitor[]> {

@@ -1,9 +1,9 @@
 import { RequestHandler } from 'express';
-import CRS from 'crypto-random-string';
 import validator from 'validator';
 import Error from '../utils/error-handler';
 import ApiService from './service';
 import { RedisLinkData, LinkMonitor } from '../@types/redis';
+import hash from '../utils/hash';
 
 const { API_VERSION, LINK_MONITORS, SITE_MONITORS } = process.env;
 
@@ -26,7 +26,6 @@ class ApiController {
             return res.status(200).send({ message: 'New information saved successfully' });
         } catch (error) {
             console.log(error);
-            
             return res.status(400).send(error);
         }
     }
@@ -76,9 +75,15 @@ class ApiController {
             if (!validator.isURL(link)) {
                 throw new Error('Please provide a valid URL');
             }
-            const randomUniqueLink = CRS({ length: 5 });
-            await ApiService.setValue(API_VERSION!, randomUniqueLink, {link, date: new Date()});
-            return res.status(201).send({ shortLink: randomUniqueLink });
+            // Deprecated Method
+            // const randomUniqueLink = CRS({ length: 5 });
+            // New Method
+            const hashedLinked = hash(link);
+            if (!(await ApiService.BloomFilter().exists(hashedLinked))) {
+                await ApiService.setValue(API_VERSION!, hashedLinked, {link, date: new Date()});
+                await ApiService.BloomFilter().add(hashedLinked);
+            }
+            return res.status(201).send({ shortLink: hashedLinked });
         } catch (error) {
             return res.status(400).send(error);
         }        
