@@ -4,10 +4,10 @@ import fetch from 'node-fetch';
 
 const { API_VERSION, ALTERNATIVE_DB_PORT } = process.env;
 
-const cron = new CronJob('* */5 * * * *', async () => {
+const cron = new CronJob('0 0 0 * * */6', async () => {
     const response = await Redis.hgetall(API_VERSION!);
     let date: Date = new Date();
-    // date.setDate(date.getDate() - 7); // Test purpose
+    date.setDate(date.getDate() - 7);
     const targetDate: number = date.getTime()
 
 
